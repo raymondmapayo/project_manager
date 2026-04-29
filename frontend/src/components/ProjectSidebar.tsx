@@ -12,6 +12,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Button,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -23,15 +24,14 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import InfoIcon from "@mui/icons-material/Info";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import React, { useState } from "react";
 
 const drawerWidth = 270;
 
-/* =========================
-   TYPES
-========================= */
 type MenuItem =
   | {
       text: string;
@@ -42,33 +42,12 @@ type MenuItem =
       divider: true;
     };
 
-/* =========================
-   MAIN MENU
-========================= */
 const menu: MenuItem[] = [
-  {
-    text: "Create New",
-    icon: <AddIcon />,
-    path: "/create",
-  },
-  {
-    divider: true,
-  },
-  {
-    text: "Home",
-    icon: <Home />,
-    path: "/projects/home",
-  },
-  {
-    text: "Project List View",
-    icon: <ViewListIcon />,
-    path: "/projects/list",
-  },
-  {
-    text: "Project Card View",
-    icon: <GridViewIcon />,
-    path: "/projects/card",
-  },
+  { text: "Create New", icon: <AddIcon />, path: "/create" },
+  { divider: true },
+  { text: "Home", icon: <Home />, path: "/" },
+  { text: "Project List View", icon: <ViewListIcon />, path: "/projects/list" },
+  { text: "Project Card View", icon: <GridViewIcon />, path: "/projects/card" },
   {
     text: "Project Board View",
     icon: <DashboardIcon />,
@@ -76,60 +55,111 @@ const menu: MenuItem[] = [
   },
 ];
 
-/* =========================
-   FOOTER MENU
-========================= */
 const footerMenu = [
   { text: "Settings", icon: <SettingsIcon /> },
   { text: "About", icon: <InfoIcon /> },
   { text: "Feedback", icon: <FeedbackIcon /> },
 ];
 
-/* =========================
-   COMPONENT
-========================= */
-const ProjectSidebar = () => {
+type Props = {
+  open: boolean;
+  onToggle: () => void;
+};
+
+const ProjectSidebar = ({ open, onToggle }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     <Drawer
       variant="permanent"
       sx={{
-        width: drawerWidth,
+        width: open ? drawerWidth : 70,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: {
-          width: drawerWidth,
+        "& .MuiDrawer-paper": {
+          width: open ? drawerWidth : 70,
+          transition: "0.3s",
+          overflow: "hidden", // IMPORTANT (no double scroll)
           boxSizing: "border-box",
+          backgroundColor: "#f5f5f5",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          backgroundColor: "#fafafa",
         },
       }}
     >
-      {/* =========================
-          TOP SECTION
-      ========================= */}
-      <Box>
-        <Toolbar>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Project Manager
-          </Typography>
+      {/* ================= HEADER (NOT SCROLLABLE) ================= */}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          backgroundColor: "#f5f5f5",
+          borderBottom: "1px solid #e0e0e0",
+        }}
+      >
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: open ? "space-between" : "center",
+          }}
+        >
+          {open && (
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              Project Manager
+            </Typography>
+          )}
+
+          <IconButton
+            onClick={onToggle}
+            size="small"
+            sx={{
+              position: "absolute",
+              top: "50%",
+              right: -14,
+              transform: "translateY(-50%)",
+              width: 32,
+              height: 32,
+              border: "1px solid #ddd",
+              borderRadius: "50%",
+              backgroundColor: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              "&:hover": { backgroundColor: "#f0f0f0" },
+            }}
+          >
+            {open ? (
+              <ChevronLeftIcon sx={{ fontSize: 18 }} />
+            ) : (
+              <ChevronRightIcon sx={{ fontSize: 18 }} />
+            )}
+          </IconButton>
         </Toolbar>
+      </Box>
 
-        <Divider />
+      {/* ================= SCROLLABLE AREA (EVERYTHING ELSE) ================= */}
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: "auto",
 
+          /* ✅ SCROLLBAR STYLE (MUI way) */
+          "&::-webkit-scrollbar": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "transparent", // same as your AntD
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#c1c1c1",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "#999",
+          },
+        }}
+      >
         {/* MENU */}
         <List>
           {menu.map((item, i) => {
@@ -143,77 +173,110 @@ const ProjectSidebar = () => {
                 selected={location.pathname === item.path}
                 onClick={() => navigate(item.path)}
                 sx={{
-                  borderRadius: 1,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2,
                   mx: 1,
-                  mb: 0.5,
-                  "&.Mui-selected": {
-                    backgroundColor: "rgba(25, 118, 210, 0.12)",
-                  },
+                  borderRadius: 1,
                 }}
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 2 : "auto",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+
+                {open && <ListItemText primary={item.text} />}
               </ListItemButton>
             );
           })}
         </List>
-      </Box>
 
-      {/* =========================
-          FOOTER SECTION
-      ========================= */}
-      <Box>
-        {/* FOOTER MENU */}
-        <List>
+        <List
+          sx={{
+            mt: 10, // 👈 move down a little
+          }}
+        >
           {footerMenu.map((item) => (
-            <ListItemButton key={item.text}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+            <ListItemButton
+              key={item.text}
+              sx={{ justifyContent: open ? "initial" : "center" }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 2 : "auto",
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+
+              {open && <ListItemText primary={item.text} />}
             </ListItemButton>
           ))}
         </List>
 
-        <Divider />
-
-        {/* =========================
-            USER PROFILE
-        ========================= */}
+        {/* PROMO */}
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
+            m: 2,
             p: 2,
-            gap: 1.5,
+            borderRadius: 2,
+            backgroundColor: "#fff",
+            boxShadow: "0px 2px 10px rgba(0,0,0,0.08)",
           }}
         >
-          {/* LEFT IMAGE */}
-          <Avatar
-            src="https://i.pravatar.cc/150?img=12"
-            sx={{ width: 45, height: 45 }}
-          />
+          <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+            Plan about to expire
+          </Typography>
 
-          {/* NAME + EMAIL */}
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-              Raymond Mapayo
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              raymond@email.com
-            </Typography>
-          </Box>
+          <Typography variant="caption" sx={{ color: "text.secondary" }}>
+            Enjoy 10% off when renewing your plan today.
+          </Typography>
 
-          {/* THREE DOT MENU */}
-          <IconButton onClick={handleMenuOpen}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 2,
+              backgroundColor: "#000",
+              borderRadius: "12px",
+              textTransform: "none",
+              "&:hover": { backgroundColor: "#222" },
+            }}
+          >
+            Get the discount
+          </Button>
+        </Box>
+
+        {/* PROFILE */}
+        <Box sx={{ display: "flex", alignItems: "center", p: 2, gap: 1.5 }}>
+          <Avatar src="https://i.pravatar.cc/150?img=12" />
+
+          {open && (
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                Raymond Mapayo
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                raymond@email.com
+              </Typography>
+            </Box>
+          )}
+
+          <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
             <MoreVertIcon />
           </IconButton>
 
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            onClose={() => setAnchorEl(null)}
           >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+            <MenuItem onClick={() => setAnchorEl(null)}>Profile</MenuItem>
+            <MenuItem onClick={() => setAnchorEl(null)}>Logout</MenuItem>
           </Menu>
         </Box>
       </Box>

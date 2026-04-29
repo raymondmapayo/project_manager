@@ -10,7 +10,7 @@ function App() {
     <MainLayout>
       <Routes>
         <Route path="/create" element={<CreateProject />} />
-        <Route path="/projects/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/projects/list" element={<ProjectList />} />
         <Route path="/projects/card" element={<ProjectCard />} />
         <Route path="/projects/board" element={<ProjectBoard />} />
