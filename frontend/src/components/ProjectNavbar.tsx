@@ -5,8 +5,6 @@ import {
   InputBase,
   IconButton,
   Avatar,
-  Menu,
-  MenuItem,
   Badge,
   Typography,
 } from "@mui/material";
@@ -18,23 +16,16 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 import React, { useState } from "react";
 import { keyframes } from "@mui/material/styles";
+import NotificationDrawer from "./NotificationDrawer";
+import ProfileDrawer from "./ProfileDrawer";
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(120deg); }
 `;
-
 const ProjectNavbar = ({ open }: { open: boolean }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
+  const [openNotif, setOpenNotif] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   const today = new Date();
 
   const formattedDate = today.toLocaleDateString("en-US", {
@@ -51,7 +42,7 @@ const ProjectNavbar = ({ open }: { open: boolean }) => {
       sx={{
         backgroundColor: "#ffffff",
         borderBottom: "1px solid #e0e0e0",
-        zIndex: (theme) => theme.zIndex.drawer + 1,
+        zIndex: (theme) => theme.zIndex.appBar,
 
         ml: open ? "270px" : "70px",
         width: open ? "calc(100% - 270px)" : "calc(100% - 70px)",
@@ -106,7 +97,7 @@ const ProjectNavbar = ({ open }: { open: boolean }) => {
           </Box>
 
           {/* NOTIFICATION */}
-          <IconButton>
+          <IconButton onClick={() => setOpenNotif(true)}>
             <Badge badgeContent={3} color="error">
               <NotificationsIcon />
             </Badge>
@@ -123,8 +114,46 @@ const ProjectNavbar = ({ open }: { open: boolean }) => {
           </IconButton>
 
           {/* PROFILE */}
-          <IconButton onClick={handleMenuOpen}>
-            <Avatar src="https://i.pravatar.cc/150?img=12" />
+          <IconButton onClick={() => setOpenProfile(true)}>
+            <Box
+              sx={{
+                position: "relative",
+                width: 46,
+                height: 46,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {/* ROTATING GREEN RING */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  borderRadius: "50%",
+
+                  background:
+                    "conic-gradient(#52c41a, transparent, #b7f7c1, transparent)",
+
+                  animation: "spinRing 20s linear infinite",
+
+                  // creates ring effect (hole in middle)
+                  WebkitMask:
+                    "radial-gradient(circle, transparent 62%, black 63%)",
+                  mask: "radial-gradient(circle, transparent 62%, black 63%)",
+                }}
+              />
+
+              {/* AVATAR CENTER */}
+              <Avatar
+                src="https://i.pravatar.cc/150?img=12"
+                sx={{
+                  width: 36,
+                  height: 36,
+                  zIndex: 2,
+                }}
+              />
+            </Box>
           </IconButton>
 
           {/* MORE */}
@@ -134,16 +163,11 @@ const ProjectNavbar = ({ open }: { open: boolean }) => {
         </Box>
       </Toolbar>
 
-      {/* MENU */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
-      </Menu>
+      <NotificationDrawer
+        open={openNotif}
+        onClose={() => setOpenNotif(false)}
+      />
+      <ProfileDrawer open={openProfile} onClose={() => setOpenProfile(false)} />
     </AppBar>
   );
 };

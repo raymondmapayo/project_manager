@@ -1,37 +1,8 @@
-/* container */
-.custom-pagination {
-  position: absolute !important;
-  top: 10px !important;
-  left: 10px !important;
-  right: auto !important;
-  bottom: auto !important;
-  display: flex !important;
-  gap: 8px;
-  z-index: 10;
-}
-
-/* each dot (button style like MUI) */
-.custom-pagination .swiper-pagination-bullet {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  opacity: 1;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-/* hover effect */
-.custom-pagination .swiper-pagination-bullet:hover {
-  transform: scale(1.2);
-  background: rgba(144, 238, 144, 0.6);
-}
-
-/* active dot (selected) */
-.custom-pagination .swiper-pagination-bullet-active {
-  background: #90ee90;
-  border: 1px solid #90ee90;
-  transform: scale(1.4);
-  box-shadow: 0 0 8px rgba(144, 238, 144, 0.8);
+@keyframes spinRing {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
