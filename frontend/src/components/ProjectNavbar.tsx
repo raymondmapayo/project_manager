@@ -14,10 +14,10 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-import React, { useState } from "react";
 import { keyframes } from "@mui/material/styles";
 import NotificationDrawer from "./NotificationDrawer";
 import ProfileDrawer from "./ProfileDrawer";
+import { useState } from "react";
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -44,10 +44,10 @@ const ProjectNavbar = ({ open }: { open: boolean }) => {
         borderBottom: "1px solid #e0e0e0",
         zIndex: (theme) => theme.zIndex.appBar,
 
-        ml: open ? "270px" : "70px",
+        left: open ? "270px" : "70px",
         width: open ? "calc(100% - 270px)" : "calc(100% - 70px)",
 
-        transition: "all 0.3s ease",
+        transition: "left 0.3s ease, width 0.3s ease",
       }}
     >
       <Toolbar

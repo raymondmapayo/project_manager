@@ -15,11 +15,35 @@ import SecurityIcon from "@mui/icons-material/Security";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AddIcon from "@mui/icons-material/Add";
-
+import { Link } from "react-router-dom";
 type Props = {
   open: boolean;
   onClose: () => void;
 };
+const menuItems = [
+  { text: "Home", icon: <HomeIcon fontSize="small" />, path: "/" },
+  { text: "Profile", icon: <PersonIcon fontSize="small" />, path: "/profile" },
+  {
+    text: "Projects",
+    icon: <FolderIcon fontSize="small" />,
+    path: "/projects/list",
+  },
+  {
+    text: "Subscription",
+    icon: <CreditCardIcon fontSize="small" />,
+    path: "/subscription",
+  },
+  {
+    text: "Security",
+    icon: <SecurityIcon fontSize="small" />,
+    path: "/security",
+  },
+  {
+    text: "Account Settings",
+    icon: <SettingsIcon fontSize="small" />,
+    path: "/settings",
+  },
+];
 
 const ProfileDrawer = ({ open, onClose }: Props) => {
   return (
@@ -148,58 +172,47 @@ const ProfileDrawer = ({ open, onClose }: Props) => {
 
           {/* MENU */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Box sx={menuItem}>
-              <HomeIcon fontSize="small" />
-              <Typography sx={{ ml: 1 }}>Home</Typography>
-            </Box>
+            {menuItems.map((item) => (
+              <Box
+                key={item.text}
+                component={Link}
+                to={item.path}
+                onClick={onClose}
+                sx={{
+                  ...menuItem,
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
+              >
+                {item.icon}
 
-            <Box sx={menuItem}>
-              <PersonIcon fontSize="small" />
-              <Typography sx={{ ml: 1 }}>Profile</Typography>
-            </Box>
-
-            <Box sx={menuItem}>
-              <FolderIcon fontSize="small" />
-
-              <Typography sx={{ ml: 1 }}>
-                Projects
-                <Box
-                  component="span"
-                  sx={{
-                    ml: 0.5,
-                    px: 1,
-                    py: 0.2,
-                    borderRadius: 1,
-                    backgroundColor: "#f2bbbc",
-                    color: "#ec1e1e",
-                    fontSize: 15,
-                    fontWeight: 600,
-                  }}
-                >
-                  3
-                </Box>
-              </Typography>
-            </Box>
-
-            <Box sx={menuItem}>
-              <CreditCardIcon fontSize="small" />
-              <Typography sx={{ ml: 1 }}>Subscription</Typography>
-            </Box>
-
-            <Box sx={menuItem}>
-              <SecurityIcon fontSize="small" />
-              <Typography sx={{ ml: 1 }}>Security</Typography>
-            </Box>
-
-            <Box sx={menuItem}>
-              <SettingsIcon fontSize="small" />
-              <Typography sx={{ ml: 1 }}>Account Settings</Typography>
-            </Box>
+                {item.text === "Projects" ? (
+                  <Typography sx={{ ml: 1 }}>
+                    {item.text}
+                    <Box
+                      component="span"
+                      sx={{
+                        ml: 0.5,
+                        px: 1,
+                        py: 0.2,
+                        borderRadius: 1,
+                        backgroundColor: "#f2bbbc",
+                        color: "#ec1e1e",
+                        fontSize: 15,
+                        fontWeight: 600,
+                      }}
+                    >
+                      3
+                    </Box>
+                  </Typography>
+                ) : (
+                  <Typography sx={{ ml: 1 }}>{item.text}</Typography>
+                )}
+              </Box>
+            ))}
           </Box>
 
           <Divider sx={{ mb: 1 }} />
-
-          {/* UPGRADE CARD (FIXED VISIBILITY) */}
           {/* UPGRADE CARD */}
           <Box
             sx={{

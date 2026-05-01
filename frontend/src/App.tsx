@@ -5,6 +5,8 @@ import ProjectCard from "./pages/ProjectCard";
 import ProjectBoard from "./pages/ProjectBoard";
 import CreateProject from "./pages/CreateProject";
 import Home from "./pages/Home";
+import Profile from "./module/Profile";
+import Settings from "./module/Settings";
 function App() {
   return (
     <MainLayout>
@@ -14,6 +16,9 @@ function App() {
         <Route path="/projects/list" element={<ProjectList />} />
         <Route path="/projects/card" element={<ProjectCard />} />
         <Route path="/projects/board" element={<ProjectBoard />} />
+        {/* FULL INSERT, NO CUTS */}
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </MainLayout>
   );
